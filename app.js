@@ -29,6 +29,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+$(document).ready(function() {
+    $('#myForm').on('submit', function(e) {
+        // Prevent the form from submitting immediately
+        e.preventDefault();
+
+        // Disable the submit button and show the loading spinner
+        $('#submitButton').prop('disabled', true);
+        $('#loadingSpinner').show();
+
+        // If you're making an AJAX call or any async task, you would put that here
+        // For now, we'll just simulate a delay and then submit the form
+        setTimeout(function() {
+            $('#myForm').off('submit').submit();
+        }, 2000); // This 2000ms (2 seconds) delay is just for simulation, remove it when you implement the real submission logic
+    });
+});
+
+
 document.getElementById('myForm').addEventListener('submit', handleFormSubmission);
 
 async function saveToFirebase(data) {
