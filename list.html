@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Data from Firebase</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Document ID</th>
+                    <th>Inspection Date</th>
+                    <th>Inspected By</th>
+                    <th>Property Address</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="data-list">
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        // Import necessary functions from Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDPdSxWBwKoCCnEJE7UmQ0kXZnWCe-xNGI",
+            authDomain: "lpiforms.firebaseapp.com",
+            projectId: "lpiforms",
+            storageBucket: "lpiforms.appspot.com",
+            messagingSenderId: "29177300011",
+            appId: "1:29177300011:web:c5206f132680e65e54966e",
+            measurementId: "G-YW1B3N6KRB"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Fetch data and display in table
+        async function fetchData() {
+            try {
+                const formSubmissionsQuery = query(collection(db, "formSubmissions"), orderBy('id', 'desc'));
+                const querySnapshot = await getDocs(formSubmissionsQuery);
+
+                console.log("Number of docs retrieved:", querySnapshot.size); // Log the number of documents retrieved
+
+                let dataList = document.getElementById('data-list');
+
+                querySnapshot.forEach((doc) => {
+                    console.log(doc.data()); // Log individual document data to see if it's being retrieved correctly
+
+                    let data = doc.data();
+                    let tableRow = document.createElement('tr');
+                    tableRow.innerHTML = `
+                        <td>${doc.id}</td>
+                        <td>${data.S0_inspectiondate || 'N/A'}</td>
+                        <td>${data.S0_inspectedby || 'N/A'}</td>
+                        <td>${data.S0_propertyaddress || 'N/A'}</td>
+                        <td><button class="btn btn-primary">PDF</button></td>
+                    `;
+                    dataList.appendChild(tableRow);
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error); // Log any errors
+            }
+        }
+
+        fetchData();
+    </script>
+
+</body>
+
+</html>
+
+
